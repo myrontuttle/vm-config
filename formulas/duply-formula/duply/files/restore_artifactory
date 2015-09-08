@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Check if backup file already exists
+DIR="/opt/artifactory/backup"
+BACKUP_DIR="/var/backups/artifactory"
+
+if [ "$(ls -A $DIR)" ]; then
+	echo "Backups already exist. No data restored"
+else
+	if [ "$(ls -A $BACKUP_DIR)" ]; then
+		# Restore backups
+		duply artifactory restore $DIR
+	else
+		echo "No backups available. No data restored"
+	fi
+fi

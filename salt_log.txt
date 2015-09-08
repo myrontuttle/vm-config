@@ -1,0 +1,13 @@
+==> testapp: Running provisioner: shell...
+    testapp: Running: inline script
+==> testapp: stdin: is not a tty
+==> testapp: Running provisioner: salt...
+Copying salt minion config to vm.
+Checking if salt-minion is installed
+salt-minion found
+Checking if salt-call is installed
+salt-call found
+Salt binaries found. Configuring only.
+Salt successfully configured!
+run_overstate set to false. Not running state.overstate.
+Calling state.highstate... (this may take a while)

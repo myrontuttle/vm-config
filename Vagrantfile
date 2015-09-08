@@ -9,10 +9,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	# Every Vagrant virtual environment requires a box to build off of.
 	config.vm.box = "myrontuttle/trusty"
 
-	# For masterless, mount your salt file root
+	# For masterless, mount salt file root
     config.vm.synced_folder "salt/", "/srv/salt/"
     config.vm.synced_folder "formulas/", "/srv/formulas/"
     config.vm.synced_folder "pillar/", "/srv/pillar/"
+	config.vm.synced_folder "backups/", "/var/backups/"
 
 	# Provision with Salt (first remove minion_id to replace with hostname)
 	config.vm.provision "shell", inline: "rm -f /etc/salt/minion_id"
@@ -22,21 +23,45 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	end
 
 	# Version Control Minion
-	#config.vm.define "vcs" do |vcs|
-		# Configure Networking
-	#	vcs.vm.network :private_network, ip: "192.168.50.5"
-	#	vcs.vm.network :forwarded_port, guest: 5000, host: 5000
-	#	vcs.vm.network :forwarded_port, guest: 80, host: 4567
-#
-#		vcs.vm.hostname = "vcs01"
-#	end
+	config.vm.define "vc" do |vc|
+		vc.vm.network :private_network, ip: "192.168.50.5"
+		vc.vm.hostname = "vc01"
+	end
 	
 	# Continuous Integration Minion
 	config.vm.define "ci" do |ci|
-		# Configure Networking
-		ci.vm.network :private_network, ip: "192.168.50.6"
-		ci.vm.network :forwarded_port, guest: 8080, host: 4568
-		
+		ci.vm.network :private_network, ip: "192.168.50.6"		
 		ci.vm.hostname = "ci01"
+	end
+	
+	# Binary Repository Minion
+	config.vm.define "br" do |br|
+		br.vm.network :private_network, ip: "192.168.50.7"
+		br.vm.hostname = "br01"
+	end
+	
+	# Development Minion
+	config.vm.define "dev" do |dev|
+		dev.vm.network :private_network, ip: "192.168.50.8"		
+		dev.vm.hostname = "dev01"
+	end
+	
+	# Tomcat Minion
+	config.vm.define "tomcat" do |tomcat|
+		tomcat.vm.network :private_network, ip: "192.168.50.9"
+		tomcat.vm.hostname = "tomcat01"
+	end
+	
+	# MySQL Minion
+	config.vm.define "mysql" do |mysql|
+		mysql.vm.network :private_network, ip: "192.168.50.10"		
+		mysql.vm.hostname = "mysql01"
+	end
+	
+	# TestApp Minion
+	config.vm.define "testapp" do |testapp|
+		testapp.vm.network :private_network, ip: "192.168.50.11"
+		testapp.vm.hostname = "testapp01"
+		testapp.vm.synced_folder "synced/testapp/webapps", "/var/lib/tomcat7/webapps"
 	end
 end

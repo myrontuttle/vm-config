@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Check if jobs already exists
+DIR="/var/lib/jenkins"
+CHKDIR="/var/lib/jenkins/jobs"
+TMPDIR="/tmp/jenkins-backup"
+BACKUP_DIR="/var/backups/jenkins"
+
+if [ "$(ls -A $CHKDIR)" ]; then
+	echo "Backups already exist. No data restored"
+else
+
+	if [ "$(ls -A $BACKUP_DIR)" ]; then
+		# Restore backups to temp dir
+		duply jenkins restore $TMPDIR
+
+		if [ "$(ls -A $TMPDIR)" ]; then
+			# Stop Jenkins
+			/etc/init.d/jenkins stop
+
+			rm -rf /var/lib/jenkins
+			mv $TMPDIR $DIR
+
+			# Restart Jenkins
+			/etc/init.d/jenkins start
+		fi
+	else
+		echo "No backups available. No data restored"
+	fi
+fi
+

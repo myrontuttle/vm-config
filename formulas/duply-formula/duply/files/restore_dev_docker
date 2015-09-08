@@ -1,0 +1,60 @@
+#!/bin/bash
+
+GITLAB_DIR="/var/opt/gitlab/backups"
+GITLAB_BACKUP_DIR="/var/backups/gitlab"
+
+# Check if backup file already exists
+if [ "$(ls -A $GITLAB_DIR)" ]; then
+	echo "Gitlab backups already exist. No data restored"
+else
+	if [ "$(ls -A $BACKUP_DIR)" ]; then
+		# Restore backups
+		duply gitlab restore $DIR
+	else
+		echo "No backups available. No data restored"
+	fi
+fi
+
+# Check if jobs already exists
+JENKINS_DIR="/var/lib/jenkins"
+JENKINS_CHKDIR="/var/lib/jenkins/jobs"
+JENKINS_TMPDIR="/tmp/jenkins-backup"
+JENKINS_BACKUP_DIR="/var/backups/jenkins"
+
+if [ "$(ls -A JENKINS_$CHKDIR)" ]; then
+	echo "Jenkins backups already exist. No data restored"
+else
+
+	if [ "$(ls -A $JENKINS_BACKUP_DIR)" ]; then
+		# Restore backups to temp dir
+		duply jenkins restore $JENKINS_TMPDIR
+
+		if [ "$(ls -A $JENKINS_TMPDIR)" ]; then
+			# Stop Jenkins
+			service jenkins stop
+
+			rm -rf /var/lib/jenkins
+			mv $JENKINS_TMPDIR $JENKINS_DIR
+
+			# Restart Jenkins
+			service jenkins start
+		fi
+	else
+		echo "No Jenkins backups available. No data restored"
+	fi
+fi
+
+ARTIFACTORY_DIR="/opt/artifactory/backup"
+ARTIFACTORY_BACKUP_DIR="/var/backups/artifactory"
+
+# Check if backup file already exists
+if [ "$(ls -A $ARTIFACTORY_DIR)" ]; then
+	echo "Artifactory backups already exist. No data restored"
+else
+	if [ "$(ls -A $ARTIFACTORY_BACKUP_DIR)" ]; then
+		# Restore backups
+		duply artifactory restore $ARTIFACTORY_DIR
+	else
+		echo "No Artifactory backups available. No data restored"
+	fi
+fi

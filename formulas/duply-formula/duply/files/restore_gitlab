@@ -1,0 +1,28 @@
+#!/bin/bash
+
+DIR="/var/opt/gitlab/backups"
+BACKUP_DIR="/var/backups/gitlab"
+
+# Check if backup file already exists
+if [ "$(ls -A $DIR)" ]; then
+	echo "Backups already exist. No data restored"
+else
+	if [ "$(ls -A $BACKUP_DIR)" ]; then
+		# Restore backups
+		duply gitlab restore $DIR
+	
+		gitlab-ctl stop unicorn
+		gitlab-ctl stop sidekiq
+	
+		# Set the environment variable "force" to "yes"
+		export force=yes
+	
+		# Restore backup just created
+		gitlab-rake gitlab:backup:restore
+	
+		# Restart Gitlab
+		gitlab-ctl start
+	else
+		echo "No backups available. No data restored"
+	fi
+fi

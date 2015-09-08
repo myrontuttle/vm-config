@@ -4,12 +4,23 @@ file_roots:
     - /srv/salt/base
   dev:
     - /srv/salt/dev
+    - /srv/formulas/duply-formula
     - /srv/formulas/git-formula
     - /srv/formulas/postfix-formula
     - /srv/formulas/gitlab-formula
     - /srv/formulas/jenkins-formula
+    - /srv/formulas/java-formula
+    - /srv/formulas/artifactory-formula
+    - /srv/formulas/docker-formula
+  test:
+    - /srv/salt/test
+    - /srv/formulas/java-formula
+    - /srv/formulas/tomcat-formula
+    - /srv/formulas/mysql-formula
 pillar_roots:
   base:
     - /srv/pillar/base
   dev:
     - /srv/pillar/dev
+  test:
+    - /srv/pillar/test

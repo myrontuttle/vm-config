@@ -1,0 +1,16 @@
+#!/bin/bash
+
+GITLAB_DIR="/var/opt/gitlab/backups"
+GITLAB_BACKUP_DIR="/var/backups/gitlab"
+
+# Check if backup file already exists
+if [ "$(ls -A $GITLAB_DIR)" ]; then
+	echo "Gitlab backups already exist. No data restored"
+else
+	if [ "$(ls -A $BACKUP_DIR)" ]; then
+		# Restore backups
+		duply gitlab restore $DIR
+	else
+		echo "No backups available. No data restored"
+	fi
+fi
